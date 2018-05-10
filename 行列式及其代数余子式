@@ -1,0 +1,100 @@
+#include <iostream>
+const int N = 7;
+int a[N][N];
+int determinant(int n, int i, int j[], int d, int t, int a[], int column);
+int c_determinant(int n, int i, int j[], int d, int t, int a[], int column,int i0,int j0);
+int det(int n, int a[], int column)/*计算行列式的接口*/
+{
+	int d, t, j[N];
+	d = 0;
+	t = 1;
+	d = determinant(n, 0, j, d, t, a, column);
+	return d;
+}
+int determinant(int n, int i, int j[], int d, int t, int a[], int column)
+{
+	/*计算行列式的计算函数，每次调用选择其中的一个因子*/
+	int k, sign, flag =0 ;
+	if(i<n)/*所选因子为第i行元素*/
+		for (j[i] = 0; j[i] < n; j[i]++)
+		{
+			for (k = 0; k < i; k++)
+			{
+				flag = 0;
+				if (j[i] == j[k])
+				{
+					flag = 1;
+					break;
+				}/*两个元素在同一行，再选出j[i]列的元素*/
+			}
+			if (flag == 1) continue;/*保证所选元素不在同一列*/
+			if (a[i*column + j[i]] == 0) continue;/*保证所选元素不为0*/
+			sign = 1;
+			for (k = 0; k < i; k++) 
+				if (j[i] < j[k]) sign = -sign;
+				d = determinant(n, i + 1, j, d, t*sign*a[i*column + j[i]], a, column);
+		}
+	else d += t;
+	return d;
+}
+int c_det(int n, int a[], int column, int i0, int j0)/*计算余子式*/
+{
+	int d, t, j[N];
+	d = 0;
+	t = 1;
+	d = c_determinant(n, 0, j, d, t, a, column, i0, j0);
+	return d;
+}
+int c_determinant(int n, int i, int j[], int d, int t, int a[], int column, int i0, int j0)
+{
+	int k, sign, flag = 0;
+	if (i == i0) i++;/*划掉i0行*/
+	if (i<n)
+		for (j[i] = 0; j[i] < n; j[i]++)
+		{
+			for (k = 0; k < i; k++)
+			{
+				if (k == i0) continue;/*之前划掉了第i0行*/
+				flag = 0;
+				if (j[i] == j[k]) { flag = 1; break; }
+			}
+				if (flag == 1) continue;
+				if (j[i] == j0) continue;/*划掉j0列*/
+				if (a[i*column + j[i]] == 0) continue;
+				sign = 1;
+				for (k = 0; k < i; k++)
+				{
+					if (k == i0) continue;
+					if (j[i] < j[k])
+						sign = -sign;
+				}
+				d = c_determinant(n, i + 1, j, d, t*sign*a[i*column + j[i]], a, column, i0, j0);
+			}
+	else d += t;
+	return d;
+}
+void main()
+{
+	int i, j, n, d;
+	std::cout << "n="; std::cin >> n;
+	for(i=0;i<n;i++)
+		for (j = 0; j < n; j++)
+		{
+			std::cout << "a" << i + 1 << j + 1 << "="; std::cin >> a[i][j];
+		}
+	for (i = 0; i < n; i++)
+	{
+		for (j = 0; j < n; j++)
+			std::cout << a[i][j] << "\t"; std::cout << "\n";
+	}
+	d = det(n, a[0], N);/*计算行列式*/
+	std::cout << "D=" << d << std::endl;
+	std::cout << "complement minor:\n"; /*所有的余子式*/
+	for (i = 0; i < n; i++)
+	{
+		for (j = 0; j < n; j++)
+			std::cout << c_det(n, a[0], N, i, j) << "\t";
+		std::cout << "\n";
+	}
+	system("pause");
+}
