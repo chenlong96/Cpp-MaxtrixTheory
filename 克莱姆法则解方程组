@@ -1,1 +1,83 @@
-
+/*Cramer_Rule.cpp*/
+#include <iostream>
+const int N = 7;
+long a[N][N], b[N], d0[N + 1];
+long determinant(int n, int i, int j[], long d, long t, long a[], int column);
+long det(int n, long a[], int column)
+{
+	long d, t;
+	int j[N];
+	d = 0;
+	t = 1;
+	d = determinant(n, 0, j, d, t, a, column);
+	return d;
+}
+long determinant(int n, int i, int j[], long d, long t, long a[], int column)
+{
+	int k, sign, flag = 0;
+	if(i<n)
+		for (j[i] = 0; j[i] < n; j[i]++)
+		{
+			for (k = 0; k < i; k++)
+			{
+				flag = 0;
+				if (j[i] == j[k]) { flag= 1; break; }
+			}
+			if (flag = 1) continue;
+			sign = 1;
+			for (k = 0; k < i; k++)
+				if (j[i] < j[k]) sign = -sign;
+			d = determinant(n, i + 1, j, d, t*sign*a[i*column + j[i]], a, column);
+	}
+	else d += t;
+	return d;
+}
+void main()
+{
+	long d, c;
+	int i, j, n;
+	std::cout << "n="; std::cin >> n;/*方程个数*/
+	for (i = 0; i < n; i++)/*输入各个系数*/
+	{
+		for (j = 0; j < n; j++)
+		{
+			std::cout << "a" << i + 1 << j + 1 << "="; std::cin >> a[i][j];
+		}
+		std::cout << "b" << i + 1 << "=", i + 1; std::cin >> b[i];
+	}
+	for (i = 0; i < n; i++)/*输出*/
+	{
+		for (j = 0; j < n; j++)
+			std::cout << a[i][j] << "\t"; std::cout << b[i] << "\n";
+	}
+	d0[n] = det(n, a[0], N);
+	std::cout << "D=" << d0[n] << "\t";/*计算系数行列式&&输出*/
+	for (j = 0; j < n; j++)
+	{
+		for (i = 0; i < n; i++)/*构造分子系数行列式*/
+		{
+			c = a[i][j];
+			a[i][j] = b[i];
+			b[i] = c;
+		}
+		d0[j] = det(n, a[0], N);
+		for (i = 0; i < n; i++)/*回复到原来的系数行列式*/
+		{
+			c = a[i][j];
+			a[i][j] = b[i];
+			b[i] = c;
+		}
+	}
+	for (i = 0; i < n; i++)
+		std::cout << "D" << i + 1 << "=" << d0[i] << "\t";
+	std::cout << std::endl;
+	for (j = 0; j < n; j++)
+	{
+		std::cout << "x" << j + 1 << "=";
+		if (d0[j] % d0[n] == 0)
+			std::cout << d0[j] / d0[n] << "   ";
+		else std::cout << 1.0*d0[j] / d0[n] << "   ";
+	}
+	std::cout << std::endl;
+	system("pause");
+}
