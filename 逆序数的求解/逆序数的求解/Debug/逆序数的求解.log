@@ -1,3 +1,0 @@
-﻿  Source.cpp
-c:\users\20635\documents\visual studio 2017\cl-project\矩阵论\n阶行列式的计算\全排列及其逆序数的求解\逆序数的求解\逆序数的求解\source.cpp(4): warning C4326: return type of 'main' should be 'int' instead of 'void'
-  逆序数的求解.vcxproj -> C:\Users\20635\Documents\Visual Studio 2017\CL-Project\矩阵论\n阶行列式的计算\全排列及其逆序数的求解\逆序数的求解\Debug\逆序数的求解.exe
